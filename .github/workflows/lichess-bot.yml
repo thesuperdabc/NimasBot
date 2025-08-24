@@ -15,11 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     
-    strategy:
-      matrix:
-        instance: [1, 2]
-      fail-fast: false
-    
+    # Removed matrix strategy to run single instance
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -34,55 +30,44 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install tenacity  # Adding missing dependency
         
-    - name: Setup engines
+    - name: Download latest Stockfish dev
       run: |
         mkdir -p engines
         sudo apt-get update && sudo apt-get install -y unzip
-        echo "🔄 Downloading latest Stockfish..."
         curl -L -o stockfish.zip http://abrok.eu/stockfish/latest/linux/stockfish_x64_modern.zip
         unzip -o stockfish.zip -d engines/
         mv engines/stockfish_* engines/sf
         chmod +x engines/sf
         
-        # Setup other engines if they exist
-        for engine in fairy-stockfish ShashChess39; do
-          if [ -f "engines/$engine" ]; then
-            echo "📎 Setting up $engine..."
-            chmod +x "engines/$engine"
-          fi
-        done
+    - name: Setup engines permissions
+      run: |
+        if [ -f "engines/fairy-stockfish" ]; then
+          chmod +x engines/fairy-stockfish
+        fi
+        if [ -f "engines/ShashChess39" ]; then
+          chmod +x engines/ShashChess39
+        fi
 
-    - name: Configure token
+    - name: Setup token
       run: |
         python3 << 'EOF'
         import yaml
-        import sys
-        
         try:
             with open('config.yml', 'r') as f:
                 config = yaml.safe_load(f) or {}
-            
             config['token'] = "${{ secrets.LICHESS_TOKEN }}"
-            
             with open('config.yml', 'w') as f:
                 yaml.dump(config, f, default_flow_style=False)
             print("✅ Token configuration successful")
         except Exception as e:
-            print(f"❌ Error configuring token: {e}")
-            sys.exit(1)
+            print(f"❌ Error: {e}")
+            exit(1)
         EOF
         
     - name: Launch bot
       timeout-minutes: 340
       run: |
-        echo "🤖 Starting bot instance ${{ matrix.instance }}..."
+        echo "🤖 Starting bot..."
         python3 user_interface.py --non-interactive
-      env:
-        INSTANCE_ID: ${{ matrix.instance }}
-
-    - name: Cleanup
-      if: always()
-      run: |
-        echo "🧹 Cleaning up instance ${{ matrix.instance }}..."
-        pkill -f "python3 user_interface.py" || true
