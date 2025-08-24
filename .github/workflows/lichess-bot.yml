@@ -1,0 +1,70 @@
+name: Lichess Bot
+
+on:
+  push:
+    branches: [ main, master ]
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+env:
+  LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
+
+jobs:
+  deploy-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    
+    strategy:
+      matrix:
+        instance: [1, 2]
+      fail-fast: false
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+        
+    - name: Download latest Stockfish dev
+      run: |
+        mkdir -p engines
+        sudo apt-get update && sudo apt-get install -y unzip
+        curl -L -o stockfish.zip http://abrok.eu/stockfish/latest/linux/stockfish_x64_modern.zip
+        unzip -o stockfish.zip -d engines/
+        mv engines/stockfish_* engines/sf
+        chmod +x engines/sf
+        
+    - name: Fairy-Stockfish
+      run: |
+          chmod +x engines/fairy-stockfish
+        
+    - name: ShashChess39
+      run: |
+          chmod +x engines/ShashChess39
+        
+
+    - name: Setup token
+      run: |
+        python3 << 'EOF'
+        import yaml
+        
+        with open('config.yml', 'r') as f:
+            config = yaml.safe_load(f)
+            
+        config['token'] = "${{ secrets.LICHESS_TOKEN }}"
+        
+        with open('config.yml', 'w') as f:
+            yaml.dump(config, f, default_flow_style=False)
+        EOF
+        
+    - name: Launch bot
+      timeout-minutes: 340
+      run: python3 user_interface.py --non-interactive
