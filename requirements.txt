@@ -6,3 +6,4 @@ requests>=2.28.0
 uvloop>=0.17.0
 colorama>=0.4.4
 websockets>=11.0
+tenacity>=8.2.0  # Add this line
