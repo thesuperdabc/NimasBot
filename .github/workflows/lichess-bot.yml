@@ -44,7 +44,7 @@ jobs:
     - name: Setup engines permissions
       run: |
         if [ -f "engines/fairy-stockfish" ]; then
-          chmod +x engines/fairy-stockfish
+          chmod +x engines/fsf
         fi
         if [ -f "engines/ShashChess39" ]; then
           chmod +x engines/ShashChess39
