@@ -67,4 +67,4 @@ jobs:
         
     - name: Launch bot
       timeout-minutes: 340
-      run: python3 user_interface.py --non-interactive
+      run: python3 user_interface.py -u
