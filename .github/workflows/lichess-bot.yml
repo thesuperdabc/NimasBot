@@ -1,15 +1,13 @@
 name: Lichess Bot
 
 on:
-  push:
-    branches: [ main, master ]
+  workflow_dispatch:  # Manual trigger
   schedule:
-    - cron: '0 */6 * * *'  # Runs every 6 hours
-  workflow_dispatch:
+    - cron: '0 */6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  group: "lichess-bot"
+  cancel-in-progress: true
 
 env:
   LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
@@ -20,47 +18,37 @@ jobs:
     timeout-minutes: 350
     
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 1
     
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
         cache: 'pip'
-        check-latest: true
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip wheel setuptools
-        pip install -r requirements.txt --no-cache-dir
-        
-    - name: Cache engines
-      uses: actions/cache@v3
-      with:
-        path: engines
-        key: ${{ runner.os }}-engines-${{ hashFiles('**/config.yml') }}
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
         
     - name: Setup engines
       run: |
         mkdir -p engines
-        # Download and setup Stockfish
-        echo "⚙️ Setting up Stockfish..."
+        # Download Stockfish
+        echo "🔄 Setting up Stockfish..."
         curl -L -o stockfish.zip http://abrok.eu/stockfish/latest/linux/stockfish_x64_modern.zip
         unzip -o stockfish.zip -d engines/
         mv engines/stockfish_* engines/stockfish
+        
+        # Set permissions for all engines
+        echo "🔧 Setting engine permissions..."
         chmod +x engines/stockfish
+        chmod +x engines/fairy-stockfish_x86-64-bmi2
+        chmod +x engines/ShashChess39
         
-        # Setup other engines if present
-        for engine in fairy-stockfish_x86-64-bmi2 ShashChess39; do
-          if [ -f "engines/$engine" ]; then
-            echo "⚙️ Setting up $engine..."
-            chmod +x "engines/$engine"
-          fi
-        done
-        
+        # Verify engines
+        echo "📋 Listing engines:"
         ls -la engines/
 
     - name: Configure bot
@@ -72,7 +60,9 @@ jobs:
                 config = yaml.safe_load(f) or {}
             
             config['token'] = os.environ['LICHESS_TOKEN']
-            config['engine']['path'] = './engines/stockfish'
+            config.setdefault('engine', {})
+            config['engine']['dir'] = './engines'
+            config['engine']['name'] = 'stockfish'
             
             with open('config.yml', 'w') as f:
                 yaml.dump(config, f, default_flow_style=False)
@@ -86,13 +76,4 @@ jobs:
       timeout-minutes: 340
       run: |
         echo "🤖 Starting bot..."
-        python3 user_interface.py --non-interactive &
-        BOT_PID=$!
-        
-        # Monitor bot process
-        while kill -0 $BOT_PID 2>/dev/null; do
-          sleep 60
-          echo "🔄 Bot running..."
-        done
-      env:
-        PYTHONUNBUFFERED: 1
+        python3 user_interface.py --non-interactive
