@@ -4,8 +4,12 @@ on:
   push:
     branches: [ main, master ]
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *'  # Runs every 6 hours
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
 
 env:
   LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
@@ -15,52 +19,64 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 350
     
-    # Removed matrix strategy to run single instance
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
     
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
         cache: 'pip'
+        check-latest: true
     
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install tenacity  # Adding missing dependency
+        python -m pip install --upgrade pip wheel setuptools
+        pip install -r requirements.txt --no-cache-dir
         
-    - name: Download latest Stockfish dev
+    - name: Cache engines
+      uses: actions/cache@v3
+      with:
+        path: engines
+        key: ${{ runner.os }}-engines-${{ hashFiles('**/config.yml') }}
+        
+    - name: Setup engines
       run: |
         mkdir -p engines
-        sudo apt-get update && sudo apt-get install -y unzip
+        # Download and setup Stockfish
+        echo "⚙️ Setting up Stockfish..."
         curl -L -o stockfish.zip http://abrok.eu/stockfish/latest/linux/stockfish_x64_modern.zip
         unzip -o stockfish.zip -d engines/
-        mv engines/stockfish_* engines/sf
-        chmod +x engines/sf
+        mv engines/stockfish_* engines/stockfish
+        chmod +x engines/stockfish
         
-    - name: Setup engines permissions
-      run: |
-        if [ -f "engines/fairy-stockfish" ]; then
-          chmod +x engines/fairy-stockfish_x86-64-bmi2
-        fi
-        if [ -f "engines/ShashChess39" ]; then
-          chmod +x engines/ShashChess39
-        fi
+        # Setup other engines if present
+        for engine in fairy-stockfish_x86-64-bmi2 ShashChess39; do
+          if [ -f "engines/$engine" ]; then
+            echo "⚙️ Setting up $engine..."
+            chmod +x "engines/$engine"
+          fi
+        done
+        
+        ls -la engines/
 
-    - name: Setup token
+    - name: Configure bot
       run: |
         python3 << 'EOF'
-        import yaml
+        import yaml, os
         try:
             with open('config.yml', 'r') as f:
                 config = yaml.safe_load(f) or {}
-            config['token'] = "${{ secrets.LICHESS_TOKEN }}"
+            
+            config['token'] = os.environ['LICHESS_TOKEN']
+            config['engine']['path'] = './engines/stockfish'
+            
             with open('config.yml', 'w') as f:
                 yaml.dump(config, f, default_flow_style=False)
-            print("✅ Token configuration successful")
+            print("✅ Configuration successful")
         except Exception as e:
             print(f"❌ Error: {e}")
             exit(1)
@@ -70,4 +86,13 @@ jobs:
       timeout-minutes: 340
       run: |
         echo "🤖 Starting bot..."
-        python3 user_interface.py -u
+        python3 user_interface.py --non-interactive &
+        BOT_PID=$!
+        
+        # Monitor bot process
+        while kill -0 $BOT_PID 2>/dev/null; do
+          sleep 60
+          echo "🔄 Bot running..."
+        done
+      env:
+        PYTHONUNBUFFERED: 1
