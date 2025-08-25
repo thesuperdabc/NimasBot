@@ -12,7 +12,7 @@ To use the multi-engine support for chess variants, you need to download and ins
 ## Configuration
 
 The config.yml file is already configured to use these engines:
-- `standard`: Uses stockfish.exe (already included)
+- `standard`: Uses latest sf (already included)
 - `variants`: General variant engine using Fairy-Stockfish
 - `chess960`: Chess960-specific engine with UCI_Chess960 enabled
 - `atomic`: Atomic chess engine with UCI_Variant set to atomic
