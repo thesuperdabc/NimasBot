@@ -1,16 +1,15 @@
 name: Lichess Bot
 
 on:
-  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ main, master ]
   schedule:
     - cron: '0 */6 * * *'
-
-concurrency:
-  group: "lichess-bot"
-  cancel-in-progress: true
+  workflow_dispatch:
 
 env:
   LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
+  TOURNAMENT_ID: "OB2F7oaO"  # Added tournament ID
 
 jobs:
   deploy-bot:
@@ -19,10 +18,10 @@ jobs:
     
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v4
     
     - name: Setup Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v4
       with:
         python-version: '3.11'
         cache: 'pip'
@@ -35,20 +34,13 @@ jobs:
     - name: Setup engines
       run: |
         mkdir -p engines
-        # Download Stockfish
         echo "🔄 Setting up Stockfish..."
         curl -L -o stockfish.zip http://abrok.eu/stockfish/latest/linux/stockfish_x64_modern.zip
         unzip -o stockfish.zip -d engines/
         mv engines/stockfish_* engines/stockfish
-        
-        # Set permissions for all engines
-        echo "🔧 Setting engine permissions..."
         chmod +x engines/stockfish
-        chmod +x engines/fairy-stockfish_x86-64-bmi2
-        chmod +x engines/ShashChess39
-        
-        # Verify engines
-        echo "📋 Listing engines:"
+        chmod +x engines/fairy-stockfish_x86-64-bmi2 || true
+        chmod +x engines/ShashChess39 || true
         ls -la engines/
 
     - name: Configure bot
@@ -58,12 +50,10 @@ jobs:
         try:
             with open('config.yml', 'r') as f:
                 config = yaml.safe_load(f) or {}
-            
             config['token'] = os.environ['LICHESS_TOKEN']
             config.setdefault('engine', {})
             config['engine']['dir'] = './engines'
             config['engine']['name'] = 'stockfish'
-            
             with open('config.yml', 'w') as f:
                 yaml.dump(config, f, default_flow_style=False)
             print("✅ Configuration successful")
@@ -75,5 +65,5 @@ jobs:
     - name: Launch bot
       timeout-minutes: 340
       run: |
-        echo "🤖 Starting bot..."
-        python3 user_interface.py -u tournament OB2F7oaO
+        echo "🤖 Starting bot in tournament $TOURNAMENT_ID..."
+        python3 user_interface.py tournament "$TOURNAMENT_ID"
