@@ -97,17 +97,21 @@ opening_books:
 97|         - nikibook
 98|         - lilawhite
 99|         - lila
-100|         - nimas
-101|     0.5+0:
-102|       selection: best_move
-103|       max_depth: 20
-104|       names:
-105|         - nimas
-106|         - probook
-107|         - nikimoves
-108|         - nikibook
-109|         - lilawhite
-110|         - lila
+100|        - nimas
+101|   0.5+0:
+102|     selection: best_move
+103|     max_depth: 20
+104|     names:
+105|       - nimas
+106|       - probook
+107|       - nikimoves
+108|       - nikibook
+109|       - lilawhite
+110|       - lila
+107|       - nikimoves
+108|       - nikibook
+109|       - lilawhite
+110|       - lila
     bullet_white:                            # Other bullet games (1+0)
       selection: weighted_random
       max_depth: 20                    # Limit book depth so engine evaluates positions
@@ -414,6 +418,7 @@ books:
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
 
 
