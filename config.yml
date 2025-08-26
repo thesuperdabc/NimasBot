@@ -89,19 +89,27 @@ opening_books:
   priority: 400                           # Priority with which this move source is used. Higher priority is used first.
   read_learn:      true                  # Whether to read the learn values from the books.
   91|   books:
-92|     bullet:
-93|       selection: best_move
-94|       names:
-95|         - probook
-96|         - nikimoves
-97|         - nikibook
-98|         - lilawhite
-99|         - lila
-100|        - nimas
-101|   0.5+0:
-102|     selection: best_move
-103|     max_depth: 20
-104|     names:
+92|  bullet:
+  selection: best_move
+  names:
+    - probook
+    - nikimoves
+    - nikibook
+    - lilawhite
+    - lila
+    - nimas
+
+0.5+0:
+  selection: best_move
+  max_depth: 20
+  names:
+    - probook
+    - nikimoves
+    - nikibook
+    - lilawhite
+    - lila
+    - nimas
+
 105|       - nimas
 106|       - probook
 107|       - nikimoves
@@ -418,6 +426,7 @@ books:
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
 
 
