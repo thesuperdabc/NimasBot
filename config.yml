@@ -93,10 +93,12 @@ opening_books:
      selection: best_move          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
    names:                              # List of names of books to use in bullet.
        - probook
-       - bestchess960
+      
        - nikimoves
        - nikibook
-       
+       - lilawhite
+       - lila
+       - nimas
 #   standard_black:
 #     selection: best_move                # Move selection is one of "weighted_random", "uniform_random" or "best_move".
 #     names:                              # List of names of books to use as black.
@@ -106,18 +108,35 @@ opening_books:
       max_depth: 20                    # Limit book depth so engine evaluates positions
       names:
         - nimas
+        - probook
+        - nikimoves
+        - nikibook
+        - lilawhite
+        - lila
     bullet_white:                            # Other bullet games (1+0)
       selection: weighted_random
       max_depth: 20                    # Limit book depth so engine evaluates positions
       names:
         - small
         - probook
+        - nimas
+        
+        - nikimoves
+        - nikibook
+        - lilawhite
+        - lila
     bullet_black:                            # Aggressive black bullet setup
       selection: best_move                # Always play strongest moves as black
       max_depth: 15                    # Deeper book usage for black preparation
       names:
         - small
         - probook
+     
+        - nimas
+        
+        - nikimoves
+        - nikibook
+        - lilawhite
     3+0:                             # Blitz games (5+3)
       selection: weighted_random
       names:
@@ -247,7 +266,7 @@ online_moves:
 #   max_depth: 16                         # Half move max depth. (Comment this line for max depth)
 #   max_moves: 1                          # Max number of moves played from Lichess cloud eval. (Comment this line for max moves)
   chessdb:
-    enabled: false                        # Activate online moves from https://chessdb.cn/queryc_en/
+    enabled: true                        # Activate online moves from https://chessdb.cn/queryc_en/
     priority: 100                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
     min_candidates: 1                     # Minimum number of candidate moves.
@@ -272,14 +291,14 @@ offer_draw:
 # min_rating: 2300                        # Minimum rating of opponent to offer draw.
 
 resign:
-  enabled: true                          # Enable resignation to avoid hopeless positions.
+  enabled: false                         # Enable resignation to avoid hopeless positions.
   score: -800                            # Resign when clearly losing (8 pawns down).
   consecutive_moves: 8                    # More moves to confirm truly lost position.
   against_humans: false                    # Never resign against humans - fight till the end.
 # min_rating: 2300                        # Minimum rating of opponent to resign.
 
 challenge:                                # Incoming challenges.
-  concurrency: 1                          # Number of games to play simultaneously.
+  concurrency: 2                          # Number of games to play simultaneously.
   max_takebacks: 3                        # Maximum number of takebacks granted to a human.
   bullet_with_increment_only: false       # Whether bullet games against BOTs should only be accepted with increment.
 # min_increment: 0                        # Minimum amount of increment to accept a challenge.
@@ -396,7 +415,11 @@ books:
   white3check: "./books/white3check.bin"
   black3check: "./books/black3check.bin"
   small: "./books/small.bin"
-  nimas: "./books/nimas.bin"
+  nimas: "./books/nimas.bin"   niki: "./engines/nikimoves.bin"
+  lilawhite: "./engines/lilawhite.bin"
+  lilablack: "./engines/lila.bin"
+  nikibook: "./engines/nikibook.bin"
+
 
 
 
