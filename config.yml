@@ -86,7 +86,7 @@ gaviota:
   max_pieces: 5                           # Count of max pieces in the local gaviota endgame tablebases.
 
 opening_books:
-  enabled: false                           # Activate opening books.
+  enabled: true                           # Activate opening books.
   priority: 400                           # Priority with which this move source is used. Higher priority is used first.
   read_learn: false                       # Whether to read the learn values from the books.
   books:
@@ -406,6 +406,7 @@ auto_rematch:
   only_against_humans: false              # Only offer rematch against human accounts.
   alternate_colors: true                  # Alternate colors for rematches.
   message: "Would you like another game? I've sent a rematch challenge!" # Custom message to send with rematch.
+
 
 
 
