@@ -393,7 +393,6 @@ books:
   Gukesh: "./masterbooks/Gukesh.bin"
   Nakamura: "./masterbooks/Nakamura.bin"
   Nepomniachtchi: "./masterbooks/Nepomniachtchi.bin"
-
   probook: "./books/probook.bin"
   whiteanti: "./books/whiteanti.bin"
   blackanti: "./books/blackanti.bin"
@@ -411,6 +410,7 @@ books:
   small: "./books/small.bin"
   nimas: "./books/nimas.bin"
  
+
 
 
 
