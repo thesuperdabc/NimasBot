@@ -404,13 +404,14 @@ blacklist:                                # List of users who are not challenged
 
 
 books:                                    
-  Kasparov: "./masterbooks/Kasparov.bin"     # Kasparov's opening book 
-  Carlsen: "./masterbooks/Carlsen.bin"       # Carlsen's opening book
-  Caruana: "./masterbooks/Caruana.bin"       # Caruana's opening book
-  Ding: "./masterbooks/Ding.bin"             # Ding's opening book
-  Gukesh: "./masterbooks/Gukesh.bin"         # Gukesh's opening book
-  Nakamura: "./masterbooks/Nakamura.bin"     # Nakamura's opening book
-  Nepomniachtchi: "./masterbooks/Nepomniachtchi.bin"  # Nepomniachtchi's opening book
+  Kasparov: "./masterbooks/Kasparov.bin"
+  Carlsen: "./masterbooks/Carlsen.bin"
+  Caruana: "./masterbooks/Caruana.bin"
+  Ding: "./masterbooks/Ding.bin"
+  Gukesh: "./masterbooks/Gukesh.bin"
+  Nakamura: "./masterbooks/Nakamura.bin"
+  Nepomniachtchi: "./masterbooks/Nepomniachtchi.bin"
+
   probook: "./books/probook.bin"
   whiteanti: "./books/whiteanti.bin"
   blackanti: "./books/blackanti.bin"
@@ -426,23 +427,8 @@ books:
   white3check: "./books/white3check.bin"
   black3check: "./books/black3check.bin"
   small: "./books/small.bin"
-  nimas: "./books/nimas.bin"   niki: "./engines/nikimoves.bin"
+  nimas: "./books/nimas.bin"
+  niki: "./engines/nikimoves.bin"
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
