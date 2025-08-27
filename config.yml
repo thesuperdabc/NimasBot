@@ -396,6 +396,16 @@ books:
   small: "./books/small.bin"
   nimas: "./books/nimas.bin"
 
+auto_rematch:
+  enabled: true                          # Activate auto-rematch functionality.
+  max_rematches: 3                        # Maximum number of consecutive rematches with the same opponent.
+  delay: 2                                # Delay in seconds before sending rematch challenge.
+  only_after_wins: false                  # Only offer rematch after winning.
+  only_after_losses: false                # Only offer rematch after losing.
+  only_against_bots: false                # Only offer rematch against BOT accounts.
+  only_against_humans: false              # Only offer rematch against human accounts.
+  alternate_colors: true                  # Alternate colors for rematches.
+  message: "Would you like another game? I've sent a rematch challenge!" # Custom message to send with rematch.
 
 
 
