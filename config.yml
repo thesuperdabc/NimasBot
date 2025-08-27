@@ -1,4 +1,4 @@
-token: "XXXXXXXXXXXXXXXXXXX"         # Lichess OAuth2 Token.s
+token: "XXXXXXXXXXXXXXXXXXX"         # Lichess OAuth2 Token.
 
 engines:
   bullet:                               # Engine used for standard chess and when no suitable special engine is configured.
@@ -6,13 +6,13 @@ engines:
     name: "stockfish"                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
-    move_overhead_multiplier: 0.5        # Optimized for bullet games.
+    move_overhead_multiplier: 1.5         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
     uci_options:                          # Arbitrary UCI options passed to the engine.
-      Threads: 4                          # Increased threads for Threadripper power.
-      Hash: 256                           # Increased hash for better position evaluation.
-      Move Overhead: 100                # Reduced for faster bullet moves.
+      Threads: 8                          # Max CPU threads the engine can use.
+      Hash: 5500                           # Max memory (in megabytes) the engine can allocate.
+      Move Overhead: 250                  # Increase if your bot flags games too often.
     limits:                               # Limits that end the move calculation early.
-   #   depth: 28                          # Maximum search depth for bullet.
+      time: 5.0                           # Max time per move in seconds.
 
   chess960:                               # Engine used for standard chess and when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
@@ -28,7 +28,7 @@ engines:
     
   standard:                               # Engine used for standard chess and when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
-    name: "stockfish"                     # Binary name of the engine to use.
+    name: "ShashChess39"                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
     move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
@@ -39,7 +39,19 @@ engines:
     limits:    
   #    depth: 35                           # Deep search for standard games.
   #    nodes: 8000000                      # High node count for thorough analysis.
- 
+  variants:                               # Engine used for variants when no suitable special engine is configured.
+    dir: "./engines"                      # Directory containing the engine.
+    name: "fairy-stockfish_x86-64-bmi2"           # Binary name of the engine to use. (You need to download Fairy-Stockfish and place it in the engines directory)
+    ponder: true                          # Think on opponent's time.
+    silence_stderr: false                 # Suppresses stderr output.
+    move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
+    uci_options:                          # Arbitrary UCI options passed to the engine.
+      Threads: 8                          # High thread count for variants.
+      Hash: 10000                           # Large hash for variant calculations.
+      Move Overhead: 100                  # Increase if your bot flags games too often.
+      Use NNUE: true
+      EvalFile: "3check-cb5f517c228b.nnue:antichess-dd3cbe53cd4e.nnue:atomic-2cf13ff256cc.nnue:crazyhouse-8ebf84784ad2.nnue:horde-28173ddccabe.nnue:kingofthehill-978b86d0e6a4.nnue:racingkings-636b95f085e3.nnue"
+    limits:   # Limits that end the move calculation early.
   #    depth: 30                           # Deep variant search.
  #     nodes: 6000000                      # High node count for variants.
 # Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical', time controls in initial_minutes+increment_seconds format,
@@ -72,6 +84,144 @@ gaviota:
     - "/path/to/gaviota"
   max_pieces: 5                           # Count of max pieces in the local gaviota endgame tablebases.
 
+opening_books:
+  enabled: false                           # Activate opening books.
+  priority: 400                           # Priority with which this move source is used. Higher priority is used first.
+  read_learn: false                       # Whether to read the learn values from the books.
+  books:
+#   bullet:
+#     selection: weighted_random          # Move selection is one of "weighted_random", "uniform_random" or "best_move".
+#     names:                              # List of names of books to use in bullet.
+#       - BulletBook
+#       - DefaultBook
+#   standard_black:
+#     selection: best_move                # Move selection is one of "weighted_random", "uniform_random" or "best_move".
+#     names:                              # List of names of books to use as black.
+#       - BlackBook
+    0.5+0_white:                          # 30 sec bullet games (0.5+0)
+      selection: best_move
+      max_depth: 20                    # Limit book depth so engine evaluates positions
+      names:
+        - nimas
+    0.5+0_black:                          # 30 sec bullet games (0.5+0)
+      selection: best_move
+      max_depth: 20                    # Limit book depth so engine evaluates positions
+      names:
+        - nimas   
+    bullet_white:                            # Other bullet games (1+0)
+      selection: weighted_random
+      max_depth: 20                    # Limit book depth so engine evaluates positions
+      names:
+        - small
+        - probook
+    bullet_black:                            # Aggressive black bullet setup
+      selection: best_move                # Always play strongest moves as black
+      max_depth: 15                    # Deeper book usage for black preparation
+      names:
+        - small
+        - probook
+    3+0:                             # Blitz games (5+3)
+      selection: weighted_random
+      names:
+        - small
+        - probook
+    standard:                           
+      selection: weighted_random
+      names:
+        - small
+    antichess_white:
+      selection: best_move
+      names:
+        - whiteanti
+    antichess_black:
+      selection: best_move
+      names:
+        - blackanti
+    3check_white:
+      selection: best_move
+      names:
+        - white3check
+    kingofthehill_black:
+      selection: best_move
+      names:
+        - blackkingofhill
+    kingofthehill_white:
+      selection: best_move
+      names:
+        - whitekingofhill
+    atomic_white:
+      selection: best_move
+      names:
+        - whiteatomic
+    crazyhouse:
+      selection: best_move
+      names:
+        - crazyhouse
+    chess960:
+      selection: best_move
+      names:
+        - chess960
+    atomic_black:
+      selection: best_move
+      names:
+        - blackatomic
+    horde:
+      selection: best_move
+      names:
+        - horde
+    racingkings_white_human:
+      selection: best_move
+      names:
+        - whiterk
+    racingkings_black_human:
+      selection: best_move
+      names:
+        - blackrk
+    3check_black:
+      selection: best_move
+      names:
+        - black3check    
+    standard_human:
+      selection: weighted_random
+      random_selection: true  
+      names:
+        - Nakamura
+        - Carlsen
+        - Caruana
+        - Ding
+        - Gukesh
+    bullet_human:
+      selection: weighted_random
+      random_selection: true
+      names:
+        - Kasparov
+        - Carlsen
+        - Caruana
+        - Ding
+        - Gukesh
+        - Nakamura
+        - Nepomniachtchi
+    blitz_human:
+      selection: weighted_random
+      random_selection: true
+      names:
+        - Nakamura
+        - Carlsen
+        - Nepomniachtchi
+    rapid_human:
+      selection: best_move
+      random_selection: true
+      names:
+        - Kasparov
+        - Carlsen
+        - Caruana
+        - Ding
+        - Gukesh
+        - Nakamura
+        - Nepomniachtchi
+#   Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical', time controls in initial_minutes+increment_seconds format,
+#   'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
+#   Append '_white', '_black', '_human' and/or '_tournament' to use the book only as the specific color, against humans or in tournaments.
 
 online_moves:
   opening_explorer:
@@ -90,167 +240,7 @@ online_moves:
 #   max_moves: 1                          # Max number of moves played from Lichess opening explorer. (Comment this line for max moves)
   lichess_cloud:
     enabled: false                        # Activate online moves from Lichess cloud eval.
-    priority: 200                         # Prioropening_books:
-  enabled: true                           # Activate opening books.
-  priority: 400                           # Priority with which this move source is used. Higher priority is used first.
-  read_learn: true                        # Whether to read the learn values from the books.
-opening_books:
-  enabled: true                           # Activate opening books.
-  priority: 400                           # Priority with which this move source is used. Higher priority is used first.
-  read_learn: true                        # Whether to read the learn values from the books.
-  books:
-    bullet:
-      selection: best_move
-      names:
-        - probook
-        
-        - nimas
-
-
-    0.5+0:
-      selection: best_move
-      max_depth: 20
-      names:
-        - probook
-        
-        - nimas
-
-    bullet_white:                            # Other bullet games (1+0)
-      selection: weighted_random
-      max_depth: 20
-      names:
-        - small
-        - probook
-        - nimas
-        
-
-    bullet_black:                            # Aggressive black bullet setup
-      selection: best_move
-      max_depth: 15
-      names:
-        - small
-        - probook
-        - nimas
-       
-
-    3+0:
-      selection: weighted_random
-      names:
-        - small
-        - probook
-
-    standard:
-      selection: weighted_random
-      names:
-        - small
-
-    antichess_white:
-      selection: best_move
-      names:
-        - whiteanti
-
-    antichess_black:
-      selection: best_move
-      names:
-        - blackanti
-
-    3check_white:
-      selection: best_move
-      names:
-        - white3check
-
-    3check_black:
-      selection: best_move
-      names:
-        - black3check
-
-    kingofthehill_white:
-      selection: best_move
-      names:
-        - whitekingofhill
-
-    kingofthehill_black:
-      selection: best_move
-      names:
-        - blackkingofhill
-
-    atomic_white:
-      selection: best_move
-      names:
-        - whiteatomic
-
-    atomic_black:
-      selection: best_move
-      names:
-        - blackatomic
-
-    crazyhouse:
-      selection: best_move
-      names:
-        - crazyhouse
-
-    chess960:
-      selection: best_move
-      names:
-        - chess960
-
-    horde:
-      selection: best_move
-      names:
-        - horde
-
-    racingkings_white_human:
-      selection: best_move
-      names:
-        - whiterk
-
-    racingkings_black_human:
-      selection: best_move
-      names:
-        - blackrk
-
-    standard_human:
-      selection: weighted_random
-      random_selection: true
-      names:
-        - Nakamura
-        - Carlsen
-        - Caruana
-        - Ding
-        - Gukesh
-
-    bullet_human:
-      selection: weighted_random
-      random_selection: true
-      names:
-        - Kasparov
-        - Carlsen
-        - Caruana
-        - Ding
-        - Gukesh
-        - Nakamura
-        - Nepomniachtchi
-
-    blitz_human:
-      selection: weighted_random
-      random_selection: true
-      names:
-        - Nakamura
-        - Carlsen
-        - Nepomniachtchi
-
-    rapid_human:
-      selection: best_move
-      random_selection: true
-      names:
-        - Kasparov
-        - Carlsen
-        - Caruana
-        - Ding
-        - Gukesh
-        - Nakamura
-        - Nepomniachtchi
-
+    priority: 200                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the cloud should only be used if there is no matching book.
     use_for_variants: false               # Whether the cloud should be used for other variants than standard and chess960.
     min_eval_depth: 10                    # Minimum evaluation depth.
@@ -259,7 +249,7 @@ opening_books:
 #   max_depth: 16                         # Half move max depth. (Comment this line for max depth)
 #   max_moves: 1                          # Max number of moves played from Lichess cloud eval. (Comment this line for max moves)
   chessdb:
-    enabled: true                        # Activate online moves from https://chessdb.cn/queryc_en/
+    enabled: false                        # Activate online moves from https://chessdb.cn/queryc_en/
     priority: 100                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
     min_candidates: 1                     # Minimum number of candidate moves.
@@ -284,14 +274,14 @@ offer_draw:
 # min_rating: 2300                        # Minimum rating of opponent to offer draw.
 
 resign:
-  enabled: false                         # Enable resignation to avoid hopeless positions.
+  enabled: true                          # Enable resignation to avoid hopeless positions.
   score: -800                            # Resign when clearly losing (8 pawns down).
   consecutive_moves: 8                    # More moves to confirm truly lost position.
   against_humans: false                    # Never resign against humans - fight till the end.
 # min_rating: 2300                        # Minimum rating of opponent to resign.
 
 challenge:                                # Incoming challenges.
-  concurrency: 2                          # Number of games to play simultaneously.
+  concurrency: 1                          # Number of games to play simultaneously.
   max_takebacks: 3                        # Maximum number of takebacks granted to a human.
   bullet_with_increment_only: false       # Whether bullet games against BOTs should only be accepted with increment.
 # min_increment: 0                        # Minimum amount of increment to accept a challenge.
@@ -386,13 +376,13 @@ blacklist:                                # List of users who are not challenged
 
 
 books:                                    
-  Kasparov: "./masterbooks/Kasparov.bin"
-  Carlsen: "./masterbooks/Carlsen.bin"
-  Caruana: "./masterbooks/Caruana.bin"
-  Ding: "./masterbooks/Ding.bin"
-  Gukesh: "./masterbooks/Gukesh.bin"
-  Nakamura: "./masterbooks/Nakamura.bin"
-  Nepomniachtchi: "./masterbooks/Nepomniachtchi.bin"
+  Kasparov: "./masterbooks/Kasparov.bin"     # Kasparov's opening book 
+  Carlsen: "./masterbooks/Carlsen.bin"       # Carlsen's opening book
+  Caruana: "./masterbooks/Caruana.bin"       # Caruana's opening book
+  Ding: "./masterbooks/Ding.bin"             # Ding's opening book
+  Gukesh: "./masterbooks/Gukesh.bin"         # Gukesh's opening book
+  Nakamura: "./masterbooks/Nakamura.bin"     # Nakamura's opening book
+  Nepomniachtchi: "./masterbooks/Nepomniachtchi.bin"  # Nepomniachtchi's opening book
   probook: "./books/probook.bin"
   whiteanti: "./books/whiteanti.bin"
   blackanti: "./books/blackanti.bin"
@@ -409,12 +399,3 @@ books:
   black3check: "./books/black3check.bin"
   small: "./books/small.bin"
   nimas: "./books/nimas.bin"
- 
-
-
-
-
-
-
-
-
