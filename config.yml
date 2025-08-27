@@ -421,10 +421,11 @@ books:
   black3check: "./books/black3check.bin"
   small: "./books/small.bin"
   nimas: "./books/nimas.bin"
-  niki: "./engines/nikimoves.bin"
+  nikimoves: "./engines/nikimoves.bin"
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
 
 
