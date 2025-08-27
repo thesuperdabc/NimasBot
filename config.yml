@@ -106,7 +106,7 @@ online_moves:
   enabled: true                           # Activate opening books.
   priority: 400                           # Priority with which this move source is used. Higher priority is used first.
   read_learn: true                        # Whether to read the learn values from the books.
-  books:
+ opening_books:
     bullet:
       selection: best_move
       names:
@@ -432,4 +432,5 @@ books:
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
