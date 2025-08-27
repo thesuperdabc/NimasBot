@@ -3,7 +3,7 @@ token: "XXXXXXXXXXXXXXXXXXX"         # Lichess OAuth2 Token.
 engines:
   bullet:                               # Engine used for standard chess and when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
-    name: "nsf"                     # Binary name of the engine to use.
+    name: ""                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
     move_overhead_multiplier: 0.5        # Optimized for bullet games.
@@ -28,7 +28,7 @@ engines:
     
   standard:                               # Engine used for standard chess and when no suitable special engine is configured.
     dir: "./engines"                      # Directory containing the engine.
-    name: "nsf"                     # Binary name of the engine to use.
+    name: ""                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
     move_overhead_multiplier: 1.0         # Increase if your bot flags games too often. Default move overhead is 1 second per 1 minute initital time.
@@ -437,6 +437,7 @@ books:
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
 
 
