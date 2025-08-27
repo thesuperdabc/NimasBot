@@ -116,7 +116,7 @@ class Game_Manager:
             return
 
         self.started_game_events.append(game_event)
-       self.changed_event.set()
+        self.changed_event.set()
 
     def start_matchmaking(self) -> None:
         if self.in_rematch:
