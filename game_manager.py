@@ -36,6 +36,11 @@ class Game_Manager:
         self.unstarted_tournaments: dict[str, Tournament] = {}
         self.tournaments_to_join: deque[Tournament] = deque()
         self.tournaments: dict[str, Tournament] = {}
+        self.rematch_counts: dict[frozenset[str], int] = {}
+        self.in_rematch = False
+        self.rematch_opponent = None
+        
+        self.rematch_counts: dict[frozenset[str], int] = {}
 
     def stop(self):
         self.is_running = False
@@ -85,6 +90,11 @@ class Game_Manager:
         return len(self.tasks) + len(self.tournaments) + self.reserved_game_spots >= self.config.challenge.concurrency
 
     def add_challenge(self, challenge: Challenge) -> None:
+        if self.in_rematch and challenge.challenger_name != self.rematch_opponent:
+            print(f"Declining challenge from {challenge.challenger_name} because we're in a rematch with {self.rematch_opponent}")
+            asyncio.create_task(self.api.decline_challenge(challenge.challenge_id, "later"))
+            return
+            
         if challenge not in self.open_challenges:
             self.open_challenges.append(challenge)
             self.changed_event.set()
@@ -106,9 +116,13 @@ class Game_Manager:
             return
 
         self.started_game_events.append(game_event)
-        self.changed_event.set()
+       self.changed_event.set()
 
     def start_matchmaking(self) -> None:
+        if self.in_rematch:
+            print(f"Not starting matchmaking because we're in a rematch with {self.rematch_opponent}")
+            return
+            
         self.matchmaking_enabled = True
         self._set_next_matchmaking(1)
         self.changed_event.set()
@@ -224,6 +238,11 @@ class Game_Manager:
             del self.tournaments[game.ejected_tournament]
             print(f'Ignoring tournament "{game.ejected_tournament}" after failure to start the game.')
 
+        if self.in_rematch:
+            print(f"Rematch with {self.rematch_opponent} completed, resetting rematch flags")
+            self.in_rematch = False
+            self.rematch_opponent = None
+            
         self._set_next_matchmaking(self.config.matchmaking.delay)
         self.changed_event.set()
 
@@ -261,6 +280,10 @@ class Game_Manager:
     async def _check_matchmaking(self) -> None:
         self.next_matchmaking = None
         self.is_rate_limited = False
+
+        if self.in_rematch:
+            print(f"Skipping matchmaking because we're in a rematch with {self.rematch_opponent}")
+            return
 
         if self.current_matchmaking_game_id:
             return
