@@ -6,11 +6,14 @@ engines:
     name: "stockfish"                     # Binary name of the engine to use.
     ponder: true                          # Think on opponent's time.
     silence_stderr: false                 # Suppresses stderr output.
-    move_overhead_multiplier: 9.5         # Optimized for bullet games.
+    move_overhead_multiplier: 9.0         # Optimized for bullet games.
     uci_options:                          # Arbitrary UCI options passed to the engine.
       Threads: 8                          # Increased threads for Threadripper power.
       Hash: 4000                           # Increased hash for better position evaluation.
       Move Overhead: 180                  # Reduced for faster bullet moves.
+      Minimum Thinking Time: 0
+      Slow Mover: 40
+      
     limits:                               # Limits that end the move calculation early.
    #   depth: 28                          # Maximum search depth for bullet.
 
@@ -394,6 +397,7 @@ books:
   black3check: "./books/black3check.bin"
   small: "./books/small.bin"
   nimas: "./books/nimas.bin"
+
 
 
 
