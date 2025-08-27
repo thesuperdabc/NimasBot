@@ -56,9 +56,19 @@ class Config:
         challenge_config = cls._get_challenge_config(yaml_config['challenge'])
         matchmaking_config = cls._get_matchmaking_config(yaml_config['matchmaking'])
         messages_config = cls._get_messages_config(yaml_config['messages'] or {})
-
-        whitelist = [username.lower() for username in yaml_config.get('whitelist') or []]
-        blacklist = [username.lower() for username in yaml_config.get('blacklist') or []]
+        whitelist = [string.lower() for string in yaml_config.get('whitelist') or []]
+        blacklist = [string.lower() for string in yaml_config.get('blacklist') or []]
+        auto_rematch_config = cls._get_auto_rematch_config(yaml_config.get('auto_rematch', {
+            'enabled': False,
+            'max_rematches': 3,
+            'delay': 2,
+            'only_after_wins': False,
+            'only_after_losses': False,
+            'only_against_bots': False,
+            'only_against_humans': False,
+            'alternate_colors': True,
+            'message': "Would you like another game? I've sent a rematch challenge!"
+        }))
 
         return cls(yaml_config.get('url', 'https://lichess.org'),
                    yaml_config['token'],
@@ -529,6 +539,36 @@ class Config:
                                messages_section.get('goodbye'),
                                messages_section.get('greeting_spectators'),
                                messages_section.get('goodbye_spectators'))
+                               
+    @staticmethod
+    def _get_auto_rematch_config(auto_rematch_section: dict[str, Any]) -> Auto_Rematch_Config:
+        auto_rematch_sections = [
+            ['enabled', bool, '"enabled" must be a bool.'],
+            ['max_rematches', int, '"max_rematches" must be an integer.'],
+            ['delay', int, '"delay" must be an integer.'],
+            ['only_after_wins', bool, '"only_after_wins" must be a bool.'],
+            ['only_after_losses', bool, '"only_after_losses" must be a bool.'],
+            ['only_against_bots', bool, '"only_against_bots" must be a bool.'],
+            ['only_against_humans', bool, '"only_against_humans" must be a bool.'],
+            ['alternate_colors', bool, '"alternate_colors" must be a bool.'],
+            ['message', str, '"message" must be a string wrapped in quotes.']]
+
+        for subsection in auto_rematch_sections:
+            if subsection[0] not in auto_rematch_section:
+                raise RuntimeError(f'Your config does not have required `auto_rematch` subsection `{subsection[0]}`.')
+
+            if not isinstance(auto_rematch_section[subsection[0]], subsection[1]):
+                raise TypeError(f'`auto_rematch` subsection {subsection[2]}')
+
+        return Auto_Rematch_Config(auto_rematch_section['enabled'],
+                                  auto_rematch_section['max_rematches'],
+                                  auto_rematch_section['delay'],
+                                  auto_rematch_section['only_after_wins'],
+                                  auto_rematch_section['only_after_losses'],
+                                  auto_rematch_section['only_against_bots'],
+                                  auto_rematch_section['only_against_humans'],
+                                  auto_rematch_section['alternate_colors'],
+                                  auto_rematch_section['message'])
 
     @staticmethod
     def _get_version() -> str:
