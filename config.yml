@@ -84,158 +84,6 @@ gaviota:
     - "/path/to/gaviota"
   max_pieces: 5                           # Count of max pieces in the local gaviota endgame tablebases.
 
-opening_books:
-  enabled: true                           # Activate opening books.
-  priority: 400                           # Priority with which this move source is used. Higher priority is used first.
-  read_learn:      true                  # Whether to read the learn values from the books.
-  91|   books:
-92|  bullet:
-  selection: best_move
-  names:
-    - probook
-    - nikimoves
-    - nikibook
-    - lilawhite
-    - lila
-    - nimas
-
-0.5+0:
-  selection: best_move
-  max_depth: 20
-  names:
-    - probook
-    - nikimoves
-    - nikibook
-    - lilawhite
-    - lila
-    - nimas
-
-bullet_white:                            # Other bullet games (1+0)
-  selection: weighted_random
-  max_depth: 20                          # Limit book depth so engine evaluates positions
-  names:
-    - small
-    - probook
-    - nimas
-    - nikimoves
-    - nikibook
-    - lilawhite
-    - lila
-
-    bullet_black:                            # Aggressive black bullet setup
-      selection: best_move                # Always play strongest moves as black
-      max_depth: 15                    # Deeper book usage for black preparation
-      names:
-        - small
-        - probook
-     
-        - nimas
-        
-        - nikimoves
-        - nikibook
-        - lilawhite
-    3+0:                             # Blitz games (5+3)
-      selection: weighted_random
-      names:
-        - small
-        - probook
-    standard:                           
-      selection: weighted_random
-      names:
-        - small
-    antichess_white:
-      selection: best_move
-      names:
-        - whiteanti
-    antichess_black:
-      selection: best_move
-      names:
-        - blackanti
-    3check_white:
-      selection: best_move
-      names:
-        - white3check
-    kingofthehill_black:
-      selection: best_move
-      names:
-        - blackkingofhill
-    kingofthehill_white:
-      selection: best_move
-      names:
-        - whitekingofhill
-    atomic_white:
-      selection: best_move
-      names:
-        - whiteatomic
-    crazyhouse:
-      selection: best_move
-      names:
-        - crazyhouse
-    chess960:
-      selection: best_move
-      names:
-        - chess960
-    atomic_black:
-      selection: best_move
-      names:
-        - blackatomic
-    horde:
-      selection: best_move
-      names:
-        - horde
-    racingkings_white_human:
-      selection: best_move
-      names:
-        - whiterk
-    racingkings_black_human:
-      selection: best_move
-      names:
-        - blackrk
-    3check_black:
-      selection: best_move
-      names:
-        - black3check    
-    standard_human:
-      selection: weighted_random
-      random_selection: true  
-      names:
-        - Nakamura
-        - Carlsen
-        - Caruana
-        - Ding
-        - Gukesh
-    bullet_human:
-      selection: weighted_random
-      random_selection: true
-      names:
-        - Kasparov
-        - Carlsen
-        - Caruana
-        - Ding
-        - Gukesh
-        - Nakamura
-        - Nepomniachtchi
-    blitz_human:
-      selection: weighted_random
-      random_selection: true
-      names:
-        - Nakamura
-        - Carlsen
-        - Nepomniachtchi
-    rapid_human:
-      selection: best_move
-      random_selection: true
-      names:
-        - Kasparov
-        - Carlsen
-        - Caruana
-        - Ding
-        - Gukesh
-        - Nakamura
-        - Nepomniachtchi
-#   Use the same pattern for 'bullet', 'blitz', 'rapid', 'classical', time controls in initial_minutes+increment_seconds format,
-#   'antichess', 'atomic', 'chess960', 'crazyhouse', 'horde', 'kingofthehill', 'racingkings' and '3check' as well.
-#   Append '_white', '_black', '_human' and/or '_tournament' to use the book only as the specific color, against humans or in tournaments.
 
 online_moves:
   opening_explorer:
@@ -254,7 +102,173 @@ online_moves:
 #   max_moves: 1                          # Max number of moves played from Lichess opening explorer. (Comment this line for max moves)
   lichess_cloud:
     enabled: false                        # Activate online moves from Lichess cloud eval.
-    priority: 200                         # Priority with which this move source is used. Higher priority is used first.
+    priority: 200                         # Prioropening_books:
+  enabled: true                           # Activate opening books.
+  priority: 400                           # Priority with which this move source is used. Higher priority is used first.
+  read_learn: true                        # Whether to read the learn values from the books.
+  books:
+    bullet:
+      selection: best_move
+      names:
+        - probook
+        - nikimoves
+        - nikibook
+        - lilawhite
+        - lila
+        - nimas
+
+    0.5+0:
+      selection: best_move
+      max_depth: 20
+      names:
+        - probook
+        - nikimoves
+        - nikibook
+        - lilawhite
+        - lila
+        - nimas
+
+    bullet_white:                            # Other bullet games (1+0)
+      selection: weighted_random
+      max_depth: 20
+      names:
+        - small
+        - probook
+        - nimas
+        - nikimoves
+        - nikibook
+        - lilawhite
+        - lila
+
+    bullet_black:                            # Aggressive black bullet setup
+      selection: best_move
+      max_depth: 15
+      names:
+        - small
+        - probook
+        - nimas
+        - nikimoves
+        - nikibook
+        - lilawhite
+
+    3+0:
+      selection: weighted_random
+      names:
+        - small
+        - probook
+
+    standard:
+      selection: weighted_random
+      names:
+        - small
+
+    antichess_white:
+      selection: best_move
+      names:
+        - whiteanti
+
+    antichess_black:
+      selection: best_move
+      names:
+        - blackanti
+
+    3check_white:
+      selection: best_move
+      names:
+        - white3check
+
+    3check_black:
+      selection: best_move
+      names:
+        - black3check
+
+    kingofthehill_white:
+      selection: best_move
+      names:
+        - whitekingofhill
+
+    kingofthehill_black:
+      selection: best_move
+      names:
+        - blackkingofhill
+
+    atomic_white:
+      selection: best_move
+      names:
+        - whiteatomic
+
+    atomic_black:
+      selection: best_move
+      names:
+        - blackatomic
+
+    crazyhouse:
+      selection: best_move
+      names:
+        - crazyhouse
+
+    chess960:
+      selection: best_move
+      names:
+        - chess960
+
+    horde:
+      selection: best_move
+      names:
+        - horde
+
+    racingkings_white_human:
+      selection: best_move
+      names:
+        - whiterk
+
+    racingkings_black_human:
+      selection: best_move
+      names:
+        - blackrk
+
+    standard_human:
+      selection: weighted_random
+      random_selection: true
+      names:
+        - Nakamura
+        - Carlsen
+        - Caruana
+        - Ding
+        - Gukesh
+
+    bullet_human:
+      selection: weighted_random
+      random_selection: true
+      names:
+        - Kasparov
+        - Carlsen
+        - Caruana
+        - Ding
+        - Gukesh
+        - Nakamura
+        - Nepomniachtchi
+
+    blitz_human:
+      selection: weighted_random
+      random_selection: true
+      names:
+        - Nakamura
+        - Carlsen
+        - Nepomniachtchi
+
+    rapid_human:
+      selection: best_move
+      random_selection: true
+      names:
+        - Kasparov
+        - Carlsen
+        - Caruana
+        - Ding
+        - Gukesh
+        - Nakamura
+        - Nepomniachtchi
+ity with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the cloud should only be used if there is no matching book.
     use_for_variants: false               # Whether the cloud should be used for other variants than standard and chess960.
     min_eval_depth: 10                    # Minimum evaluation depth.
@@ -416,6 +430,7 @@ books:
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
 
 
