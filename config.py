@@ -7,7 +7,7 @@ from typing import Any
 
 import yaml
 
-from configs import (Books_Config, Challenge_Config, ChessDB_Config, Engine_Config, Gaviota_Config,
+from configs import (Auto_Rematch_Config, Books_Config, Challenge_Config, ChessDB_Config, Engine_Config, Gaviota_Config,
                      Lichess_Cloud_Config, Limit_Config, Matchmaking_Config, Matchmaking_Type_Config, Messages_Config,
                      Offer_Draw_Config, Online_EGTB_Config, Online_Moves_Config, Opening_Books_Config,
                      Opening_Explorer_Config, Resign_Config, Syzygy_Config)
@@ -27,9 +27,9 @@ class Config:
     challenge: Challenge_Config
     matchmaking: Matchmaking_Config
     messages: Messages_Config
-
     whitelist: list[str]
     blacklist: list[str]
+    auto_rematch: Auto_Rematch_Config
     version: str
 
     @classmethod
@@ -82,9 +82,9 @@ class Config:
                    challenge_config,
                    matchmaking_config,
                    messages_config,
-
                    whitelist,
                    blacklist,
+                   auto_rematch_config,
                    cls._get_version())
 
     @staticmethod
