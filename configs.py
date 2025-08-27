@@ -176,3 +176,16 @@ class Messages_Config:
     goodbye: str | None
     greeting_spectators: str | None
     goodbye_spectators: str | None
+
+@dataclass
+class Auto_Rematch_Config:
+    enabled: bool
+    max_rematches: int  # Maximum number of consecutive rematches with the same opponent
+    delay: int  # Delay in seconds before sending rematch challenge
+    only_after_wins: bool  # Only offer rematch after winning
+    only_after_losses: bool  # Only offer rematch after losing
+    only_against_bots: bool  # Only offer rematch against BOT accounts
+    only_against_humans: bool  # Only offer rematch against human accounts
+    alternate_colors: bool  # Alternate colors for rematches
+    message: str | None  # Custom message to send with rematch
+
