@@ -103,10 +103,7 @@ opening_books:
       selection: best_move
       names:
         - probook
-        - nikimoves
-        - nikibook
-        - lilawhite
-        - lila
+        
         - nimas
 
 
@@ -115,10 +112,7 @@ opening_books:
       max_depth: 20
       names:
         - probook
-        - nikimoves
-        - nikibook
-        - lilawhite
-        - lila
+        
         - nimas
 
     bullet_white:                            # Other bullet games (1+0)
@@ -128,10 +122,7 @@ opening_books:
         - small
         - probook
         - nimas
-        - nikimoves
-        - nikibook
-        - lilawhite
-        - lila
+        
 
     bullet_black:                            # Aggressive black bullet setup
       selection: best_move
@@ -140,9 +131,7 @@ opening_books:
         - small
         - probook
         - nimas
-        - nikimoves
-        - nikibook
-        - lilawhite
+       
 
     3+0:
       selection: weighted_random
@@ -425,6 +414,7 @@ books:
   lilawhite: "./engines/lilawhite.bin"
   lilablack: "./engines/lila.bin"
   nikibook: "./engines/nikibook.bin"
+
 
 
 
